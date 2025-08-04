@@ -16,9 +16,15 @@
     <style>
         body {
             font-family: 'Lato', sans-serif;
-            background-color: #F8F7F4;
-            color: #333;
+            background-color: #F8F7F4; /* Light mode default */
+            color: #333; /* Light mode default */
         }
+        /* Dark mode styles */
+        html.dark body {
+            background-color: #1A202C; /* Dark background */
+            color: #E2E8F0; /* Light text */
+        }
+
         .accent-color { color: #3B82F6; }
         .bg-accent-color { background-color: #3B82F6; }
         .border-accent-color { border-color: #3B82F6; }
@@ -30,13 +36,29 @@
             color: #3B82F6;
             border-bottom-color: #3B82F6;
         }
+        /* Dark mode for nav links */
+        html.dark .nav-link {
+            color: #CBD5E0; /* Lighter text in dark mode */
+        }
+        html.dark .nav-link.active, html.dark .nav-link:hover {
+            color: #3B82F6; /* Accent remains */
+            border-bottom-color: #3B82F6;
+        }
+
         .kpi-card {
             transition: transform 0.3s, box-shadow 0.3s;
+            background-color: #FFFFFF; /* Light mode default */
         }
         .kpi-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
+        /* Dark mode for KPI cards */
+        html.dark .kpi-card {
+            background-color: #2D3748; /* Darker background */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.12);
+        }
+
         .timeline-item-content {
             max-height: 0;
             overflow: hidden;
@@ -52,6 +74,8 @@
         .skill-tag {
             transition: background-color 0.3s, color 0.3s, transform 0.2s;
             cursor: pointer;
+            background-color: #E5E7EB; /* Light mode default */
+            color: #4B5563; /* Light mode default */
         }
         .skill-tag:hover {
             transform: scale(1.05);
@@ -60,9 +84,20 @@
             background-color: #3B82F6;
             color: white;
         }
+        /* Dark mode for skill tags */
+        html.dark .skill-tag {
+            background-color: #4A5568; /* Darker background */
+            color: #CBD5E0; /* Lighter text */
+        }
+
         .bullet-point.highlight {
-            background-color: #DBEAFE;
+            background-color: #DBEAFE; /* Light mode default */
             border-left: 3px solid #3B82F6;
+        }
+        /* Dark mode for highlighted bullet points */
+        html.dark .bullet-point.highlight {
+            background-color: #3182CE; /* Darker blue for highlight */
+            border-left-color: #3B82F6;
         }
         .bullet-point {
             transition: background-color 0.3s, border-left-color 0.3s;
@@ -98,14 +133,91 @@
         .lang-button {
             padding: 0.25rem 0.75rem;
             border-radius: 9999px;
-            background-color: #E5E7EB;
-            color: #4B5563;
+            background-color: #E5E7EB; /* Light mode default */
+            color: #4B5563; /* Light mode default */
             font-weight: 600;
             transition: background-color 0.2s, color 0.2s;
         }
         .lang-button.active {
             background-color: #3B82F6;
             color: white;
+        }
+        /* Dark mode for lang buttons */
+        html.dark .lang-button {
+            background-color: #4A5568; /* Darker background */
+            color: #CBD5E0; /* Lighter text */
+        }
+        html.dark .lang-button.active {
+            background-color: #3B82F6;
+            color: white;
+        }
+
+        /* General dark mode adjustments for elements that were bg-white */
+        .bg-white {
+            background-color: #FFFFFF;
+        }
+        html.dark .bg-white {
+            background-color: #2D3748;
+        }
+        .bg-blue-50 {
+            background-color: #EFF6FF;
+        }
+        html.dark .bg-blue-50 {
+            background-color: #1E3A8A; /* A darker blue for the explanation box */
+        }
+        .border-blue-200 {
+            border-color: #BFDBFE;
+        }
+        html.dark .border-blue-200 {
+            border-color: #1C3E6B; /* Darker border for the explanation box */
+        }
+        .text-gray-600 {
+            color: #4B5563;
+        }
+        html.dark .text-gray-600 {
+            color: #A0AEC0; /* Lighter gray for text */
+        }
+        .text-gray-500 {
+            color: #6B7280;
+        }
+        html.dark .text-gray-500 {
+            color: #718096; /* Even lighter gray */
+        }
+        .text-gray-700 {
+            color: #374151;
+        }
+        html.dark .text-gray-700 {
+            color: #CBD5E0; /* Lighter text */
+        }
+        .bg-white\/80 {
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        html.dark .bg-white\/80 {
+            background-color: rgba(26, 32, 44, 0.8); /* Dark header background */
+        }
+        .shadow-sm {
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        html.dark .shadow-sm {
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+        }
+        .shadow-md {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        html.dark .shadow-md {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
+        }
+        .bg-gray-300 {
+            background-color: #D1D5DB;
+        }
+        html.dark .bg-gray-300 {
+            background-color: #4A5568; /* Darker timeline line */
+        }
+        .text-gray-400 {
+            color: #9CA3AF;
+        }
+        html.dark .text-gray-400 {
+            color: #718096; /* Lighter toggle icon */
         }
     </style>
 </head>
@@ -124,6 +236,7 @@
                 <div class="flex space-x-2">
                     <button id="lang-fr" class="lang-button active">FR</button>
                     <button id="lang-en" class="lang-button">EN</button>
+                    <button id="theme-toggle" class="lang-button">🌙</button>
                 </div>
             </div>
              <button id="mobile-menu-button" class="md:hidden text-2xl">☰</button>
@@ -147,19 +260,19 @@
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="kpi-card bg-white p-6 rounded-lg shadow-md text-center">
+                <div class="kpi-card p-6 rounded-lg shadow-md text-center">
                     <div class="text-4xl font-bold accent-color">10+</div>
                     <p class="text-gray-600 mt-2" data-lang-key="kpi_years">Années d'expérience</p>
                 </div>
-                <div class="kpi-card bg-white p-6 rounded-lg shadow-md text-center">
+                <div class="kpi-card p-6 rounded-lg shadow-md text-center">
                     <div class="text-4xl font-bold accent-color">15</div>
                     <p class="text-gray-600 mt-2" data-lang-key="kpi_managed">Personnes managées</p>
                 </div>
-                <div class="kpi-card bg-white p-6 rounded-lg shadow-md text-center">
+                <div class="kpi-card p-6 rounded-lg shadow-md text-center">
                     <div class="text-4xl font-bold accent-color">100k€</div>
                     <p class="text-gray-600 mt-2" data-lang-key="kpi_saved">Économisés annuellement</p>
                 </div>
-                <div class="kpi-card bg-white p-6 rounded-lg shadow-md text-center">
+                <div class="kpi-card p-6 rounded-lg shadow-md text-center">
                     <div class="text-4xl font-bold accent-color">+35%</div>
                     <p class="text-gray-600 mt-2" data-lang-key="kpi_engagement">Engagement Utilisateur</p>
                 </div>
@@ -170,6 +283,9 @@
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold mb-2" data-lang-key="experience_title">Parcours Professionnel</h2>
                 <p class="text-lg text-gray-600" data-lang-key="experience_subtitle">Cliquez sur un poste pour découvrir les réalisations clés.</p>
+                <button id="toggle-all-experience" class="mt-4 px-4 py-2 bg-accent-color text-white rounded-full hover:bg-blue-700 transition duration-300">
+                    <span data-lang-key="toggle_all_open">Ouvrir tout</span>
+                </button>
             </div>
             <div id="timeline-container" class="relative">
             </div>
@@ -192,11 +308,6 @@
                     <div id="dynamic-skills-categories">
                         <!-- Skill categories will be dynamically inserted here -->
                     </div>
-                    <div id="skill-explanation-container" class="mt-8 bg-blue-50 p-4 rounded-lg border border-blue-200 hidden">
-                        <h4 class="font-bold text-lg mb-2 accent-color">✨ <span data-lang-key="skill_importance">Importance de la compétence</span> : <span id="current-skill-name"></span></h4>
-                        <div id="skill-explanation-content" class="text-gray-700"></div>
-                        <div id="skill-explanation-loading" class="loading-spinner"></div>
-                    </div>
                 </div>
             </div>
         </section>
@@ -206,7 +317,7 @@
                 <h2 class="text-3xl font-bold mb-2" data-lang-key="education_contact_title">Formation & Contact</h2>
             </div>
             <div class="grid md:grid-cols-2 gap-8">
-                <div class="bg-white p-8 rounded-lg shadow-md">
+                <div class="kpi-card p-8 rounded-lg shadow-md">
                     <h3 class="text-2xl font-bold mb-4" data-lang-key="education_title">Formation & Certifications</h3>
                     <div class="mb-4">
                         <p class="font-bold text-lg" data-lang-key="edu_master_title">Master en Information Technology</p>
@@ -219,7 +330,7 @@
                         <p class="text-sm text-gray-500" data-lang-key="edu_itil_date">Certifié: Juil. 2014</p>
                     </div>
                 </div>
-                <div class="bg-white p-8 rounded-lg shadow-md">
+                <div class="kpi-card p-8 rounded-lg shadow-md">
                     <h3 class="text-2xl font-bold mb-4" data-lang-key="contact_title">Contact</h3>
                     <p class="mb-2"><strong>Email:</strong> <a href="mailto:charles.depirey@gmail.com" class="accent-color hover:underline">charles.depirey@gmail.com</a></p>
                     <p class="mb-2"><strong>Téléphone:</strong> +33 (0) 6 51 74 74 88</p>
@@ -249,6 +360,8 @@
                 kpi_engagement: "Engagement Utilisateur",
                 experience_title: "Parcours Professionnel",
                 experience_subtitle: "Cliquez sur un poste pour découvrir les réalisations clés.",
+                toggle_all_open: "Ouvrir tout",
+                toggle_all_close: "Fermer tout",
                 skills_title: "Compétences Clés",
                 skills_subtitle: "Une vue d'ensemble de mes domaines d'expertise. Cliquez sur une compétence pour voir les projets associés.",
                 skills_expertise_areas: "Domaines d'Expertise",
@@ -265,8 +378,14 @@
                 contact_title: "Contact",
                 footer_text: "&copy; 2025 Charles de Pirey. CV Interactif conçu et développé avec soin.",
                 radar_labels: ['Stratégie & Vision', 'Management & Leadership', 'Architecture Technique', 'Innovation & Produit', 'Opérations & Sécurité'],
-                api_prompt_prefix: "Expliquez l'importance de la compétence '",
-                api_prompt_suffix: "' dans un rôle de direction IT/ingénierie (CTO, VP Engineering, Head of IT), en 2-3 phrases."
+                winton_admin_role: "Administrateur IT Windows (Service Desk)",
+                winton_engineer_role: "Ingénieur Système",
+                winton_admin_period_fr: "Avr. 2013 – Déc. 2014",
+                winton_engineer_period_fr: "Jan. 2015 – Juil. 2016",
+                network_engineer_role: "Ingénieur Réseau",
+                system_admin_role: "Administrateur Système",
+                webmaster_role: "Webmaster",
+                intern_role: "Stagiaire"
             },
             en: {
                 nav_overview: "Overview",
@@ -281,6 +400,8 @@
                 kpi_engagement: "User Engagement",
                 experience_title: "Professional Experience",
                 experience_subtitle: "Click on a position to discover key achievements.",
+                toggle_all_open: "Open All",
+                toggle_all_close: "Close All",
                 skills_title: "Key Skills",
                 skills_subtitle: "An overview of my areas of expertise. Click on a skill to see associated projects.",
                 skills_expertise_areas: "Areas of Expertise",
@@ -297,8 +418,14 @@
                 contact_title: "Contact",
                 footer_text: "&copy; 2025 Charles de Pirey. Interactive CV designed and developed with care.",
                 radar_labels: ['Strategy & Vision', 'Management & Leadership', 'Technical Architecture', 'Innovation & Product', 'Operations & Security'],
-                api_prompt_prefix: "Explain the importance of the skill '",
-                api_prompt_suffix: "' in an IT/engineering leadership role (CTO, VP Engineering, Head of IT), in 2-3 sentences."
+                winton_admin_role: "Windows IT Administrator (Service Desk)",
+                winton_engineer_role: "System Engineer",
+                winton_admin_period_en: "Apr. 2013 – Dec. 2014",
+                winton_engineer_period_en: "Jan. 2015 – Jul. 2016",
+                network_engineer_role: "Network Engineer",
+                system_admin_role: "System Administrator",
+                webmaster_role: "Webmaster",
+                intern_role: "Intern"
             }
         };
 
@@ -354,30 +481,93 @@
                         }
                     },
                     {
-                        role: "System Engineer",
+                        role: "System Engineer", // Combined role for display
                         company: "Winton Group",
-                        period: "Jan. 2013 – Jan. 2016",
+                        period: "Avr. 2013 – Juil. 2016", // Combined period
                         location: "London, UK",
-                        intro: "J'ai contribué à l'amélioration significative de l'efficacité opérationnelle et de la fiabilité des systèmes IT grâce à l'automatisation.",
+                        intro: "J'ai débuté ma carrière chez Winton Group en tant qu'Administrateur IT Windows, évoluant vers un rôle d'Ingénieur Système pour piloter l'automatisation et le support avancé.",
                         details: {
-                            "Automatisation & Efficacité": [
+                            "Ingénieur Système (Jan. 2015 – Juil. 2016)": [ // Moved to top
+                                { text: "Fourni un support de niveau 2 et 3, résolvant les incidents complexes et garantissant la continuité des activités.", tags: ["Support", "Systèmes"] },
                                 { text: "Optimisé les processus de mise à niveau des postes de travail et serveurs, réduisant le temps de déploiement de 90% avec SCCM et PowerShell.", tags: ["Systèmes", "Automatisation"] },
                                 { text: "Développé des scripts PowerShell pour automatiser le déploiement et les mises à jour des machines virtuelles.", tags: ["Automatisation", "Virtualisation"] },
                                 { text: "Automatisé les processus d'intégration et de départ des employés.", tags: ["Automatisation"] },
-                            ],
-                            "Opérations & Support": [
                                 { text: "Coordonné les installations matérielles pour l'ouverture de nouveaux bureaux (APAC, USA).", tags: ["Projet"] },
-                                { text: "Mis en place un nouveau système de helpdesk (JIRA Service Desk) pour plus de 500 utilisateurs.", tags: ["Systèmes"] },
+                                { text: "Mis en place un nouveau système de helpdesk (JIRA Service Desk) pour plus de 500 utilisateurs.", tags: ["Systèmes", "Projet"] },
+                            ],
+                            "Administrateur IT Windows (Avr. 2013 – Déc. 2014)": [ // Moved to bottom
+                                { text: "Géré tous les tickets de niveau 1 pour plus de 500 utilisateurs.", tags: ["Systèmes", "Support"] },
+                                { text: "Assuré le support des systèmes audiovisuels et le support VIP.", tags: ["Support"] },
+                                { text: "Pris en charge le support des desks de trading et la résolution des problèmes liés aux claviers Bloomberg.", tags: ["Support"] },
+                                { text: "Opéré dans un environnement VMWare VDI pour toutes ces tâches.", tags: ["Virtualisation", "Support"] },
+                            ]
+                        }
+                    },
+                    {
+                        role: "Ingénieur Réseau",
+                        company: "SUPINFO",
+                        period: "2011 – Avr. 2013",
+                        location: "London, United Kingdom",
+                        intro: "En tant qu'Ingénieur Réseau, j'ai administré et optimisé l'infrastructure réseau interne, tout en assurant la sécurité.",
+                        details: {
+                            "Administration Réseau & Sécurité": [
+                                { text: "Administration, optimisation et support d'une infrastructure interne LAN/WLAN/WAN.", tags: ["Réseaux", "Support"] },
+                                { text: "Monitoring et support de la sécurité réseau interne avec la technologie Cisco ASA.", tags: ["Réseaux", "Sécurité", "Cisco ASA"] },
+                            ]
+                        }
+                    },
+                    {
+                        role: "Administrateur Système",
+                        company: "MO-SYS",
+                        period: "Juil. 2011 – Nov. 2011",
+                        location: "London, United Kingdom",
+                        intro: "Chez MO-SYS, j'ai assuré le support des utilisateurs et la maintenance des systèmes, avec un accent sur la stabilité et la virtualisation.",
+                        details: {
+                            "Support & Maintenance Système": [
+                                { text: "Support d'un bureau de plus de 25 utilisateurs.", tags: ["Support"] },
+                                { text: "Gestion et maintenance d'un réseau Windows, assurant sa stabilité et son évolution.", tags: ["Systèmes", "Réseaux"] },
+                                { text: "Test, monitoring et maintenance du système de sauvegarde.", tags: ["Systèmes", "Sécurité"] },
+                                { text: "Construction et déploiement de PCs et serveurs.", tags: ["Systèmes"] },
+                                { text: "Virtualisation utilisant ESXi, VSphere.", tags: ["Virtualisation"] },
+                                { text: "Conduite d'audits internes.", tags: ["Sécurité"] },
+                            ]
+                        }
+                    },
+                    {
+                        role: "Webmaster",
+                        company: "TurfEditions",
+                        period: "Juil. 2010 – Oct. 2010",
+                        location: "Paris Area, France",
+                        intro: "En tant que Webmaster, j'ai été en charge de la création et de la mise à jour d'un site web de paris en ligne.",
+                        details: {
+                            "Développement Web": [
+                                { text: "Création du site web: www.leturf.fr, conçu pour les paris en ligne, principalement en PHP et Java.", tags: ["Développement Web", "PHP", "Java"] },
+                                { text: "Création d'une interface en PHP pour publier en temps réel des options liées aux paris en ligne.", tags: ["Développement Web", "PHP"] },
+                            ]
+                        }
+                    },
+                    {
+                        role: "Stagiaire",
+                        company: "Microsoft",
+                        period: "Juil. 2009 – Oct. 2009",
+                        location: "France",
+                        intro: "Mon stage chez Microsoft m'a permis de travailler sur le test d'applications et le support aux partenaires avant le lancement de Windows 7.",
+                        details: {
+                            "Contribution au Développement & Support": [
+                                { text: "Test d'applications avant le lancement de Windows 7.", tags: ["Test", "Windows"] },
+                                { text: "Assistance à l'équipe ISV dans la gestion de leurs partenaires.", tags: ["Support"] },
                             ]
                         }
                     }
                 ],
                 skills: {
-                    "Cloud Computing": ["Cloud Hybride", "Architecture Cloud-Native", "Docker", "Kubernetes", "Virtualisation"],
-                    "DevOps/CloudOps": ["CI/CD", "GitLab CI", "IaC", "Terraform", "Ansible", "Observabilité", "FinOps"],
-                    "Systèmes & Réseaux": ["Windows Server", "Active Directory", "SCCM", "PowerShell", "VDI", "MDM", "VPN"],
+                    "Cloud Computing": ["Cloud Hybride", "Architecture Cloud-Native", "Docker", "Kubernetes", "Virtualisation", "ESXi", "VSphere"],
+                    "DevOps/CloudOps": ["CI/CD", "GitLab CI", "IaC", "Terraform", "Ansible", "Observabilité", "FinOps", "GitHub"],
+                    "Systèmes & Réseaux": ["Windows Server", "Active Directory", "SCCM", "PowerShell", "VDI", "MDM", "VPN", "Cisco ASA", "Réseaux"],
                     "Data & BI": ["Data-driven Solutions", "IA", "Business Intelligence"],
-                    "Gestion & Méthodologies": ["Management", "Agile", "Scrum", "Projet", "Sécurité"]
+                    "Gestion & Méthodologies": ["Management", "Agile", "Scrum", "Projet", "Sécurité", "IT Project Management"],
+                    "Scripting & Automatisation": ["PowerShell", "Python"],
+                    "Support IT": ["Support", "Test", "Windows", "Office 365 Administration"]
                 }
             },
             en: {
@@ -406,7 +596,7 @@
                                 { text: "Designed and implemented a resilient and scalable platform infrastructure, based on microservices architectures and cloud technologies.", tags: ["Architecture", "Cloud", "DevOps"] },
                                 { text: "Enhanced user engagement by 35% through the integration of AI-driven business intelligence insights.", tags: ["AI", "Data & BI"] },
                                 { text: "Defined and implemented the technology roadmap and target architecture, integrating DevOps, CI/CD principles, and observability.", tags: ["Architecture", "DevOps"] },
-                                { text: "Ensured system and data compliance with relevant regulations (GDPR, data security).", tags: ["Security"] },
+                                { text: "Assured system and data compliance with relevant regulations (GDPR, data security).", tags: ["Security"] },
                             ]
                         }
                     },
@@ -421,7 +611,7 @@
                                 { text: "Deployed a Mobile Device Management (MDM) tool for corporate smartphones.", tags: ["Systems", "Security"] },
                                 { text: "Implemented a Virtual Desktop Infrastructure (VDI) solution for 300+ users.", tags: ["Systems", "Virtualization"] },
                                 { text: "Successfully completed a secure laptop project with double VPN authentication.", tags: ["Security", "Networking"] },
-                                { text: "Implemented and maintained ESXi and Citrix infrastructure.", tags: ["Virtualization", "Systems"] },
+                                { text: "Implemented and maintained ESXi and Citrix.", tags: ["Virtualization", "Systems"] },
                             ],
                             "Optimization & Security": [
                                 { text: "Strengthened security protocols, reducing network breaches by 40% in six months.", tags: ["Security"] },
@@ -431,30 +621,93 @@
                         }
                     },
                     {
-                        role: "System Engineer",
+                        role: "System Engineer", // Combined role for display
                         company: "Winton Group",
-                        period: "Jan. 2013 – Jan. 2016",
+                        period: "Apr. 2013 – Jul. 2016", // Combined period
                         location: "London, UK",
-                        intro: "I significantly contributed to improving operational efficiency and system reliability through automation.",
+                        intro: "I began my career at Winton Group as a Windows IT Administrator, evolving into a System Engineer role to drive automation and advanced support.",
                         details: {
-                            "Automation & Efficiency": [
+                            "System Engineer (Jan. 2015 – Jul. 2016)": [ // Moved to top
+                                { text: "Provided L2 and L3 support, resolving complex incidents and ensuring business continuity.", tags: ["Support", "Systems"] },
                                 { text: "Streamlined workstation and server upgrade processes, reducing deployment time by 90% with SCCM and PowerShell.", tags: ["Systems", "Automation"] },
                                 { text: "Developed PowerShell scripts to automate VM deployment and updates.", tags: ["Automation", "Virtualization"] },
                                 { text: "Automated employee onboarding and offboarding processes.", tags: ["Automation"] },
-                            ],
-                            "Operations & Support": [
                                 { text: "Coordinated hardware setups for new office openings (APAC, USA).", tags: ["Project"] },
-                                { text: "Implemented a new helpdesk system (JIRA Service Desk) for over 500 users.", tags: ["Systems"] },
+                                { text: "Implemented a new helpdesk system (JIRA Service Desk) for over 500 users.", tags: ["Systems", "Project"] },
+                            ],
+                            "Windows IT Administrator (Apr. 2013 – Dec. 2014)": [ // Moved to bottom
+                                { text: "Handled all L1 tickets for 500+ users.", tags: ["Systems", "Support"] },
+                                { text: "Provided support for AV systems and VIP users.", tags: ["Support"] },
+                                { text: "Managed trading desk support and resolved Bloomberg keyboard issues.", tags: ["Support"] },
+                                { text: "Operated within a VMWare VDI environment for all these tasks.", tags: ["Virtualization", "Support"] },
+                            ]
+                        }
+                    },
+                    {
+                        role: "Network Engineer",
+                        company: "SUPINFO",
+                        period: "2011 – Apr. 2013",
+                        location: "London, United Kingdom",
+                        intro: "As a Network Engineer, I administered and optimized the internal network infrastructure, while ensuring security.",
+                        details: {
+                            "Network Administration & Security": [
+                                { text: "Administration, optimization, and support of an internal LAN/WLAN/WAN infrastructure.", tags: ["Networking", "Support"] },
+                                { text: "Monitoring and support of internal network security with Cisco ASA technology.", tags: ["Networking", "Security", "Cisco ASA"] },
+                            ]
+                        }
+                    },
+                    {
+                        role: "System Administrator",
+                        company: "MO-SYS",
+                        period: "Jul. 2011 – Nov. 2011",
+                        location: "London, United Kingdom",
+                        intro: "At MO-SYS, I provided user support and system maintenance, with a focus on stability and virtualization.",
+                        details: {
+                            "System Support & Maintenance": [
+                                { text: "Supported an office of 25+ users.", tags: ["Support"] },
+                                { text: "Managed and maintained a Windows network, ensuring its stability and evolution.", tags: ["Systems", "Networking"] },
+                                { text: "Tested, monitored, and maintained the backup system.", tags: ["Systems", "Security"] },
+                                { text: "Built and deployed PCs and servers.", tags: ["Systems"] },
+                                { text: "Virtualization using ESXi, VSphere.", tags: ["Virtualization"] },
+                                { text: "Conducted internal audits.", tags: ["Security"] },
+                            ]
+                        }
+                    },
+                    {
+                        role: "Webmaster",
+                        company: "TurfEditions",
+                        period: "Jul. 2010 – Oct. 2010",
+                        location: "Paris Area, France",
+                        intro: "As a Webmaster, I was responsible for the creation and updates of an online betting website.",
+                        details: {
+                            "Web Development": [
+                                { text: "Created the website: www.leturf.fr, designed for online betting, primarily using PHP and Java.", tags: ["Web Development", "PHP", "Java"] },
+                                { text: "Created a PHP interface to publish real-time options related to online betting.", tags: ["Web Development", "PHP"] },
+                            ]
+                        }
+                    },
+                    {
+                        role: "Intern",
+                        company: "Microsoft",
+                        period: "Jul. 2009 – Oct. 2009",
+                        location: "France",
+                        intro: "My internship at Microsoft involved testing applications and supporting partners before the launch of Windows 7.",
+                        details: {
+                            "Development Contribution & Support": [
+                                { text: "Tested applications before the launch of Windows 7.", tags: ["Testing", "Windows"] },
+                                { text: "Assisted the ISV team in managing their partners.", tags: ["Support"] },
                             ]
                         }
                     }
                 ],
                 skills: {
-                    "Cloud Computing": ["Hybrid Cloud", "Cloud-Native Architecture", "Docker", "Kubernetes", "Virtualization"],
-                    "DevOps/CloudOps": ["CI/CD", "GitLab CI", "IaC", "Terraform", "Ansible", "Observability", "FinOps"],
-                    "Systems & Networking": ["Windows Server", "Active Directory", "SCCM", "PowerShell", "VDI", "MDM", "VPN"],
+                    "Cloud Computing": ["Hybrid Cloud", "Cloud-Native Architecture", "Docker", "Kubernetes", "Virtualization", "ESXi", "VSphere"],
+                    "DevOps/CloudOps": ["CI/CD", "GitLab CI", "IaC", "Terraform", "Ansible", "Observability", "FinOps", "GitHub"],
+                    "Systèmes & Réseaux": ["Windows Server", "Active Directory", "SCCM", "PowerShell", "VDI", "MDM", "VPN", "Cisco ASA", "Réseaux"],
                     "Data & BI": ["Data-driven Solutions", "AI", "Business Intelligence"],
-                    "Management & Methodologies": ["Management", "Agile", "Scrum", "Project", "Security"]
+                    "Gestion & Méthodologies": ["Management", "Agile", "Scrum", "Projet", "Sécurité", "IT Project Management"],
+                    "Scripting & Automatisation": ["PowerShell", "Python"],
+                    "Support IT": ["Support", "Test", "Windows", "Office 365 Administration"]
                 }
             }
         };
@@ -466,10 +719,8 @@
         let timelineContainer;
         let skillsTagsContainer;
         let dynamicSkillsCategories; // New global variable for the dynamic skills container
-        let skillExplanationContainer;
-        let skillExplanationContent;
-        let skillExplanationLoading;
-        let currentSkillName;
+        let themeToggle; // New global variable for theme toggle
+        let toggleAllExperienceButton; // New global variable for toggle all button
 
         function updateContentLanguage() {
             document.querySelectorAll('[data-lang-key]').forEach(element => {
@@ -486,6 +737,10 @@
             // Re-render dynamic content (timeline and skills tags)
             createTimeline(currentLanguage);
             createSkillsTags(currentLanguage);
+            // Update toggle all button text
+            const allContents = document.querySelectorAll('.timeline-item-content');
+            const isOpen = allContents.length > 0 && allContents[0].classList.contains('open');
+            toggleAllExperienceButton.textContent = isOpen ? translations[currentLanguage].toggle_all_close : translations[currentLanguage].toggle_all_open;
         }
 
         function createTimeline(lang) {
@@ -590,81 +845,41 @@
             });
         }
 
-        async function getSkillExplanation(skill) {
-            skillExplanationContainer.classList.remove('hidden');
-            skillExplanationContent.textContent = '';
-            skillExplanationLoading.style.display = 'block';
-            currentSkillName.textContent = skill;
-
-            let chatHistory = [];
-            const prompt = translations[currentLanguage].api_prompt_prefix + skill + translations[currentLanguage].api_prompt_suffix;
-            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-            const payload = { contents: chatHistory };
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-            let retries = 0;
-            const maxRetries = 3;
-            let delay = 1000; // 1 second
-
-            while (retries < maxRetries) {
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) {
-                        if (response.status === 429 && retries < maxRetries - 1) { // Too Many Requests
-                            await new Promise(res => setTimeout(res, delay));
-                            delay *= 2; // Exponential backoff
-                            retries++;
-                            continue;
-                        }
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-
-                    const result = await response.json();
-                    if (result.candidates && result.candidates.length > 0 &&
-                        result.candidates[0].content && result.candidates[0].content.parts &&
-                        result.candidates[0].content.parts.length > 0) {
-                        const text = result.candidates[0].content.parts[0].text;
-                        skillExplanationContent.textContent = text;
-                    } else {
-                        skillExplanationContent.textContent = "Impossible de générer une explication pour le moment. Veuillez réessayer.";
-                    }
-                    break; // Exit loop on success
-                } catch (error) {
-                    skillExplanationContent.textContent = `Erreur lors de la récupération de l'explication : ${error.message}`;
-                    break; // Exit loop on unrecoverable error
-                } finally {
-                    skillExplanationLoading.style.display = 'none';
-                }
-            }
+        // Function to set the theme
+        function setTheme(theme) {
+            document.documentElement.classList.remove('light', 'dark');
+            document.documentElement.classList.add(theme);
+            localStorage.setItem('theme', theme);
+            themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙'; // Update button icon
         }
-
 
         document.addEventListener('DOMContentLoaded', () => {
             // Assign global variables to elements after DOM is loaded
             timelineContainer = document.getElementById('timeline-container');
             skillsTagsContainer = document.getElementById('skills-tags-container');
             dynamicSkillsCategories = document.getElementById('dynamic-skills-categories'); // Assign the new dynamic container
-            skillExplanationContainer = document.getElementById('skill-explanation-container');
-            skillExplanationContent = document.getElementById('skill-explanation-content');
-            skillExplanationLoading = document.getElementById('skill-explanation-loading');
-            currentSkillName = document.getElementById('current-skill-name');
+            themeToggle = document.getElementById('theme-toggle'); // Assign theme toggle button
+            toggleAllExperienceButton = document.getElementById('toggle-all-experience'); // Assign toggle all button
 
             // Initialize content with default language (FR)
             updateContentLanguage();
             createRadarChart(); // Create chart initially with FR labels
+
+            // Set initial theme based on localStorage or system preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                setTheme(savedTheme);
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                setTheme('dark');
+            } else {
+                setTheme('light');
+            }
 
             document.getElementById('lang-fr').addEventListener('click', () => {
                 currentLanguage = 'fr';
                 document.getElementById('lang-fr').classList.add('active');
                 document.getElementById('lang-en').classList.remove('active');
                 updateContentLanguage();
-                skillExplanationContainer.classList.add('hidden'); // Hide explanation on language change
             });
 
             document.getElementById('lang-en').addEventListener('click', () => {
@@ -672,10 +887,15 @@
                 document.getElementById('lang-en').classList.add('active');
                 document.getElementById('lang-fr').classList.remove('active');
                 updateContentLanguage();
-                skillExplanationContainer.classList.add('hidden'); // Hide explanation on language change
             });
 
+            // Theme toggle event listener
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+                setTheme(currentTheme === 'light' ? 'dark' : 'light');
+            });
 
+            // Toggle individual experience item
             timelineContainer.addEventListener('click', (e) => {
                 const clickedElement = e.target.closest('.timeline-header, .timeline-dot');
                 if (clickedElement) {
@@ -693,6 +913,7 @@
 
                     const isOpen = content.classList.contains('open');
 
+                    // Close all other open items when one is clicked
                     document.querySelectorAll('.timeline-item-content.open').forEach(c => c.classList.remove('open'));
                     document.querySelectorAll('.dot-inner').forEach(d => d.classList.add('scale-0'));
                     document.querySelectorAll('.toggle-icon').forEach(i => i.textContent = '+');
@@ -702,8 +923,34 @@
                         dotInner.classList.remove('scale-0');
                         toggleIcon.textContent = '-';
                     }
+                    // Reset "Ouvrir tout" / "Fermer tout" button state
+                    toggleAllExperienceButton.textContent = translations[currentLanguage].toggle_all_open;
                 }
             });
+
+            // Toggle all experience items
+            toggleAllExperienceButton.addEventListener('click', () => {
+                const allContents = document.querySelectorAll('.timeline-item-content');
+                const allDots = document.querySelectorAll('.dot-inner');
+                const allIcons = document.querySelectorAll('.toggle-icon');
+
+                const isAnyOpen = Array.from(allContents).some(c => c.classList.contains('open'));
+
+                if (isAnyOpen) {
+                    // If any are open, close all
+                    allContents.forEach(c => c.classList.remove('open'));
+                    allDots.forEach(d => d.classList.add('scale-0'));
+                    allIcons.forEach(i => i.textContent = '+');
+                    toggleAllExperienceButton.textContent = translations[currentLanguage].toggle_all_open;
+                } else {
+                    // If none are open, open all
+                    allContents.forEach(c => c.classList.add('open'));
+                    allDots.forEach(d => d.classList.remove('scale-0'));
+                    allIcons.forEach(i => i.textContent = '-');
+                    toggleAllExperienceButton.textContent = translations[currentLanguage].toggle_all_close;
+                }
+            });
+
 
             let activeSkill = null;
             skillsTagsContainer.addEventListener('click', (e) => {
@@ -715,7 +962,6 @@
                     if (activeSkill === skill) {
                         e.target.classList.remove('active');
                         allBullets.forEach(b => b.classList.remove('highlight'));
-                        skillExplanationContainer.classList.add('hidden');
                         activeSkill = null;
                     } else {
                         allTags.forEach(t => t.classList.remove('active'));
@@ -730,7 +976,6 @@
                                 bullet.classList.remove('highlight');
                             }
                         });
-                        getSkillExplanation(skill);
                     }
                 }
             });
