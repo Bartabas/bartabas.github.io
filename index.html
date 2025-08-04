@@ -1,1 +1,768 @@
-helo world
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Interactif - Charles de Pirey</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Professional (Warm neutrals: off-white/beige, dark gray text, with a muted blue accent) -->
+    <!-- Application Structure Plan: A non-linear, single-page dashboard with top navigation (Overview, Career Path, Skills, Contact). This structure transforms the static CV into an interactive portfolio, allowing users to explore content based on their interests (e.g., diving into specific skills or career stages) rather than just scrolling. It prioritizes user-driven exploration over a linear presentation. -->
+    <!-- Visualization & Content Choices: Career Path -> Interactive Timeline (HTML/JS) to show progression, with clickable nodes to reveal details and filters to highlight specific expertise areas. Skills -> Radar Chart (Chart.js) for a high-level view of skill balance and interactive skill tags (HTML/JS) to cross-filter experiences, demonstrating the practical application of skills. Key Metrics -> KPI Cards (HTML/CSS) for immediate impact. This approach uses interaction to connect different parts of the CV, creating a cohesive narrative. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #F8F7F4;
+            color: #333;
+        }
+        .accent-color { color: #3B82F6; }
+        .bg-accent-color { background-color: #3B82F6; }
+        .border-accent-color { border-color: #3B82F6; }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #3B82F6;
+            border-bottom-color: #3B82F6;
+        }
+        .kpi-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .timeline-item-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.7s ease-in-out, padding 0.7s ease-in-out;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .timeline-item-content.open {
+            max-height: 1000px;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        .skill-tag {
+            transition: background-color 0.3s, color 0.3s, transform 0.2s;
+            cursor: pointer;
+        }
+        .skill-tag:hover {
+            transform: scale(1.05);
+        }
+        .skill-tag.active {
+            background-color: #3B82F6;
+            color: white;
+        }
+        .bullet-point.highlight {
+            background-color: #DBEAFE;
+            border-left: 3px solid #3B82F6;
+        }
+        .bullet-point {
+            transition: background-color 0.3s, border-left-color 0.3s;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3B82F6;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: none; /* Hidden by default */
+            margin: 1rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .lang-button {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            background-color: #E5E7EB;
+            color: #4B5563;
+            font-weight: 600;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .lang-button.active {
+            background-color: #3B82F6;
+            color: white;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold">Charles de Pirey</h1>
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:flex space-x-8">
+                    <a href="#overview" class="nav-link active" data-lang-key="nav_overview">Vue d'ensemble</a>
+                    <a href="#experience" class="nav-link" data-lang-key="nav_career">Parcours</a>
+                    <a href="#skills" class="nav-link" data-lang-key="nav_skills">Compétences</a>
+                    <a href="#education" class="nav-link" data-lang-key="nav_education">Formation</a>
+                </div>
+                <div class="flex space-x-2">
+                    <button id="lang-fr" class="lang-button active">FR</button>
+                    <button id="lang-en" class="lang-button">EN</button>
+                </div>
+            </div>
+             <button id="mobile-menu-button" class="md:hidden text-2xl">☰</button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-white py-2">
+            <a href="#overview" class="block text-center py-2 nav-link-mobile" data-lang-key="nav_overview">Vue d'ensemble</a>
+            <a href="#experience" class="block text-center py-2 nav-link-mobile" data-lang-key="nav_career">Parcours</a>
+            <a href="#skills" class="block text-center py-2 nav-link-mobile" data-lang-key="nav_skills">Compétences</a>
+            <a href="#education" class="block text-center py-2 nav-link-mobile" data-lang-key="nav_education">Formation</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <section id="overview" class="mb-16 scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-4" data-lang-key="overview_title">Cadre IT Stratégique et Innovant</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600" data-lang-key="overview_subtitle">
+                    J'excelle dans la conception et le déploiement de stratégies informatiques directement alignées sur les objectifs business, transformant les défis complexes en leviers de performance.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="kpi-card bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-4xl font-bold accent-color">10+</div>
+                    <p class="text-gray-600 mt-2" data-lang-key="kpi_years">Années d'expérience</p>
+                </div>
+                <div class="kpi-card bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-4xl font-bold accent-color">15</div>
+                    <p class="text-gray-600 mt-2" data-lang-key="kpi_managed">Personnes managées</p>
+                </div>
+                <div class="kpi-card bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-4xl font-bold accent-color">100k€</div>
+                    <p class="text-gray-600 mt-2" data-lang-key="kpi_saved">Économisés annuellement</p>
+                </div>
+                <div class="kpi-card bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-4xl font-bold accent-color">+35%</div>
+                    <p class="text-gray-600 mt-2" data-lang-key="kpi_engagement">Engagement Utilisateur</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience" class="mb-16 scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-2" data-lang-key="experience_title">Parcours Professionnel</h2>
+                <p class="text-lg text-gray-600" data-lang-key="experience_subtitle">Cliquez sur un poste pour découvrir les réalisations clés.</p>
+            </div>
+            <div id="timeline-container" class="relative">
+            </div>
+        </section>
+
+        <section id="skills" class="mb-16 scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-2" data-lang-key="skills_title">Compétences Clés</h2>
+                <p class="text-lg text-gray-600" data-lang-key="skills_subtitle">Une vue d'ensemble de mes domaines d'expertise. Cliquez sur une compétence pour voir les projets associés.</p>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 class="font-bold text-xl mb-6 text-center" data-lang-key="skills_expertise_areas">Domaines d'Expertise</h3>
+                    <div class="chart-container">
+                        <canvas id="skillsRadarChart"></canvas>
+                    </div>
+                </div>
+                <div id="skills-tags-container">
+                    <h3 class="font-bold text-xl mb-6 text-center" data-lang-key="skills_tech_methods">Technologies & Méthodologies</h3>
+                    <div id="dynamic-skills-categories">
+                        <!-- Skill categories will be dynamically inserted here -->
+                    </div>
+                    <div id="skill-explanation-container" class="mt-8 bg-blue-50 p-4 rounded-lg border border-blue-200 hidden">
+                        <h4 class="font-bold text-lg mb-2 accent-color">✨ <span data-lang-key="skill_importance">Importance de la compétence</span> : <span id="current-skill-name"></span></h4>
+                        <div id="skill-explanation-content" class="text-gray-700"></div>
+                        <div id="skill-explanation-loading" class="loading-spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="education" class="scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-2" data-lang-key="education_contact_title">Formation & Contact</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold mb-4" data-lang-key="education_title">Formation & Certifications</h3>
+                    <div class="mb-4">
+                        <p class="font-bold text-lg" data-lang-key="edu_master_title">Master en Information Technology</p>
+                        <p class="text-gray-600" data-lang-key="edu_master_uni">Supinfo International University, London, UK</p>
+                        <p class="text-sm text-gray-500" data-lang-key="edu_master_date">Diplômé: Avr. 2013</p>
+                    </div>
+                    <div>
+                        <p class="font-bold text-lg" data-lang-key="edu_itil_title">ITIL Foundation</p>
+                        <p class="text-gray-600" data-lang-key="edu_itil_uni">British Computer Society, London, UK</p>
+                        <p class="text-sm text-gray-500" data-lang-key="edu_itil_date">Certifié: Juil. 2014</p>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold mb-4" data-lang-key="contact_title">Contact</h3>
+                    <p class="mb-2"><strong>Email:</strong> <a href="mailto:charles.depirey@gmail.com" class="accent-color hover:underline">charles.depirey@gmail.com</a></p>
+                    <p class="mb-2"><strong>Téléphone:</strong> +33 (0) 6 51 74 74 88</p>
+                    <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/charlesdepirey/" target="_blank" class="accent-color hover:underline">linkedin.com/in/charlesdepirey</a></p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-6 text-gray-500 text-sm">
+        <p data-lang-key="footer_text">&copy; 2025 Charles de Pirey. CV Interactif conçu et développé avec soin.</p>
+    </footer>
+
+    <script>
+        const translations = {
+            fr: {
+                nav_overview: "Vue d'ensemble",
+                nav_career: "Parcours",
+                nav_skills: "Compétences",
+                nav_education: "Formation",
+                overview_title: "Cadre IT Stratégique et Innovant",
+                overview_subtitle: "J'excelle dans la conception et le déploiement de stratégies informatiques directement alignées sur les objectifs business, transformant les défis complexes en leviers de performance.",
+                kpi_years: "Années d'expérience",
+                kpi_managed: "Personnes managées",
+                kpi_saved: "Économisés annuellement",
+                kpi_engagement: "Engagement Utilisateur",
+                experience_title: "Parcours Professionnel",
+                experience_subtitle: "Cliquez sur un poste pour découvrir les réalisations clés.",
+                skills_title: "Compétences Clés",
+                skills_subtitle: "Une vue d'ensemble de mes domaines d'expertise. Cliquez sur une compétence pour voir les projets associés.",
+                skills_expertise_areas: "Domaines d'Expertise",
+                skills_tech_methods: "Technologies & Méthodologies",
+                skill_importance: "Importance de la compétence",
+                education_contact_title: "Formation & Contact",
+                education_title: "Formation & Certifications",
+                edu_master_title: "Master en Information Technology",
+                edu_master_uni: "Supinfo International University, London, UK",
+                edu_master_date: "Diplômé: Avr. 2013",
+                edu_itil_title: "ITIL Foundation",
+                edu_itil_uni: "British Computer Society, London, UK",
+                edu_itil_date: "Certifié: Juil. 2014",
+                contact_title: "Contact",
+                footer_text: "&copy; 2025 Charles de Pirey. CV Interactif conçu et développé avec soin.",
+                radar_labels: ['Stratégie & Vision', 'Management & Leadership', 'Architecture Technique', 'Innovation & Produit', 'Opérations & Sécurité'],
+                api_prompt_prefix: "Expliquez l'importance de la compétence '",
+                api_prompt_suffix: "' dans un rôle de direction IT/ingénierie (CTO, VP Engineering, Head of IT), en 2-3 phrases."
+            },
+            en: {
+                nav_overview: "Overview",
+                nav_career: "Career Path",
+                nav_skills: "Skills",
+                nav_education: "Education",
+                overview_title: "Strategic and Innovative IT Executive",
+                overview_subtitle: "I excel in designing and implementing IT strategies directly aligned with business objectives, transforming complex challenges into performance levers.",
+                kpi_years: "Years of Experience",
+                kpi_managed: "People Managed",
+                kpi_saved: "Annual Savings",
+                kpi_engagement: "User Engagement",
+                experience_title: "Professional Experience",
+                experience_subtitle: "Click on a position to discover key achievements.",
+                skills_title: "Key Skills",
+                skills_subtitle: "An overview of my areas of expertise. Click on a skill to see associated projects.",
+                skills_expertise_areas: "Areas of Expertise",
+                skills_tech_methods: "Technologies & Methodologies",
+                skill_importance: "Skill Importance",
+                education_contact_title: "Education & Contact",
+                education_title: "Education & Certifications",
+                edu_master_title: "Master in Information Technology",
+                edu_master_uni: "Supinfo International University, London, UK",
+                edu_master_date: "Graduated: Apr. 2013",
+                edu_itil_title: "ITIL Foundation",
+                edu_itil_uni: "British Computer Society, London, UK",
+                edu_itil_date: "Certified: Jul. 2014",
+                contact_title: "Contact",
+                footer_text: "&copy; 2025 Charles de Pirey. Interactive CV designed and developed with care.",
+                radar_labels: ['Strategy & Vision', 'Management & Leadership', 'Technical Architecture', 'Innovation & Product', 'Operations & Security'],
+                api_prompt_prefix: "Explain the importance of the skill '",
+                api_prompt_suffix: "' in an IT/engineering leadership role (CTO, VP Engineering, Head of IT), in 2-3 sentences."
+            }
+        };
+
+        const cvData = {
+            fr: {
+                experience: [
+                    {
+                        role: "Co-Fondateur/CTO",
+                        company: "CAD.42 Services",
+                        period: "Oct. 2016 – Août 2025",
+                        location: "Paris, France",
+                        intro: "En tant que Co-Fondateur et CTO, j'ai piloté l'intégralité de la stratégie technologique et le développement produit, en bâtissant une organisation d'ingénierie agile et performante.",
+                        details: {
+                            "Management & Leadership": [
+                                { text: "Constitué et dirigé une équipe d'ingénieurs hautement performante (jusqu'à 15 personnes), incluant des développeurs full-stack, des data scientists et des architectes.", tags: ["Management"] },
+                                { text: "Doublé la productivité et l'efficacité opérationnelle de l'équipe grâce à la mise en place de méthodologies Agile (Scrum).", tags: ["Management", "Agile"] },
+                                { text: "Défini et mis en œuvre la stratégie de recrutement et de rétention des talents techniques, réduisant le temps d'embauche de 30%.", tags: ["Management"] },
+                                { text: "Géré les budgets technologiques (plusieurs centaines de milliers d'euros), optimisant les dépenses d'infrastructure et de licences.", tags: ["Management", "FinOps"] },
+                                { text: "Optimisé les relations avec les fournisseurs stratégiques, générant une économie annuelle de 100k€.", tags: ["Management"] },
+                            ],
+                            "Leadership Projet & Innovation": [
+                                { text: "Dirigé la conception et le déploiement de solutions data-driven pour des acteurs majeurs du BTP (Spie Batignolles, Vinci).", tags: ["Data & BI", "Projet"] },
+                                { text: "Orchestré l'intégration stratégique d'outils de Business Intelligence basés sur l'IA.", tags: ["Data & BI", "IA"] },
+                                { text: "Établi des standards rigoureux en assurance qualité et supervisé la livraison de projets dans le respect des délais et des budgets.", tags: ["Projet", "Agile"] },
+                                { text: "Piloté le cycle de vie complet de plusieurs produits SaaS, de l'idéation à la mise en production.", tags: ["Projet"] },
+                            ],
+                            "Architecture & Stratégie Technique": [
+                                { text: "Conçu et mis en œuvre une infrastructure de plateforme résiliente et scalable, basée sur des architectures microservices et des technologies cloud.", tags: ["Architecture", "Cloud", "DevOps"] },
+                                { text: "Amélioré l'engagement utilisateur de 35% grâce à l'intégration d'insights décisionnels basés sur l'IA.", tags: ["IA", "Data & BI"] },
+                                { text: "Défini et implémenté la feuille de route technologique et l'architecture cible, intégrant les principes DevOps, CI/CD et l'observabilité.", tags: ["Architecture", "DevOps"] },
+                                { text: "Assuré la conformité des systèmes et des données aux réglementations en vigueur (RGPD, sécurité des données).", tags: ["Sécurité"] },
+                            ]
+                        }
+                    },
+                    {
+                        role: "Senior System Engineer",
+                        company: "Unigestion UK",
+                        period: "Août 2016 – Juil. 2017",
+                        location: "London, UK",
+                        intro: "J'ai joué un rôle clé dans la modernisation de l'infrastructure IT, en mettant l'accent sur la sécurité, la performance et l'optimisation des coûts.",
+                        details: {
+                            "Projets & Déploiement": [
+                                { text: "Déployé un outil de gestion des appareils mobiles (MDM) pour les smartphones d'entreprise.", tags: ["Systèmes", "Sécurité"] },
+                                { text: "Instauré une solution d'infrastructure de bureau virtuel (VDI) pour plus de 300 utilisateurs.", tags: ["Systèmes", "Virtualisation"] },
+                                { text: "Mené à bien un projet d'ordinateurs portables sécurisés avec une double authentification VPN.", tags: ["Sécurité", "Réseaux"] },
+                                { text: "Implémenté et maintenu l'infrastructure ESXi et Citrix.", tags: ["Virtualisation", "Systèmes"] },
+                            ],
+                            "Optimisation & Sécurité": [
+                                { text: "Renforcé les protocoles de sécurité, réduisant les violations de réseau de 40% en six mois.", tags: ["Sécurité"] },
+                                { text: "Réduit les coûts initiaux des projets de 45% en effectuant des appels d'offres (RFPs) et des PoCs.", tags: ["Projet"] },
+                                { text: "Optimisé la performance et la fiabilité des systèmes grâce à une gestion proactive des infrastructures virtualisées.", tags: ["Virtualisation"] },
+                            ]
+                        }
+                    },
+                    {
+                        role: "System Engineer",
+                        company: "Winton Group",
+                        period: "Jan. 2013 – Jan. 2016",
+                        location: "London, UK",
+                        intro: "J'ai contribué à l'amélioration significative de l'efficacité opérationnelle et de la fiabilité des systèmes IT grâce à l'automatisation.",
+                        details: {
+                            "Automatisation & Efficacité": [
+                                { text: "Optimisé les processus de mise à niveau des postes de travail et serveurs, réduisant le temps de déploiement de 90% avec SCCM et PowerShell.", tags: ["Systèmes", "Automatisation"] },
+                                { text: "Développé des scripts PowerShell pour automatiser le déploiement et les mises à jour des machines virtuelles.", tags: ["Automatisation", "Virtualisation"] },
+                                { text: "Automatisé les processus d'intégration et de départ des employés.", tags: ["Automatisation"] },
+                            ],
+                            "Opérations & Support": [
+                                { text: "Coordonné les installations matérielles pour l'ouverture de nouveaux bureaux (APAC, USA).", tags: ["Projet"] },
+                                { text: "Mis en place un nouveau système de helpdesk (JIRA Service Desk) pour plus de 500 utilisateurs.", tags: ["Systèmes"] },
+                            ]
+                        }
+                    }
+                ],
+                skills: {
+                    "Cloud Computing": ["Cloud Hybride", "Architecture Cloud-Native", "Docker", "Kubernetes", "Virtualisation"],
+                    "DevOps/CloudOps": ["CI/CD", "GitLab CI", "IaC", "Terraform", "Ansible", "Observabilité", "FinOps"],
+                    "Systèmes & Réseaux": ["Windows Server", "Active Directory", "SCCM", "PowerShell", "VDI", "MDM", "VPN"],
+                    "Data & BI": ["Data-driven Solutions", "IA", "Business Intelligence"],
+                    "Gestion & Méthodologies": ["Management", "Agile", "Scrum", "Projet", "Sécurité"]
+                }
+            },
+            en: {
+                experience: [
+                    {
+                        role: "Co-Founder/CTO",
+                        company: "CAD.42 Services",
+                        period: "Oct. 2016 – Aug. 2025",
+                        location: "Paris, France",
+                        intro: "As Co-Founder and CTO, I spearheaded the entire technology strategy and product development, building an agile and high-performing engineering organization.",
+                        details: {
+                            "Management & Leadership": [
+                                { text: "Built and led a high-performing engineering team (up to 15 individuals), including full-stack developers, data scientists, and architects.", tags: ["Management"] },
+                                { text: "Doubled the productivity and operational efficiency of the team by implementing Agile methodologies (Scrum).", tags: ["Management", "Agile"] },
+                                { text: "Defined and executed the talent acquisition and retention strategy for technical roles, reducing hiring time by 30%.", tags: ["Management"] },
+                                { text: "Managed technology budgets (several hundred thousand euros), optimizing infrastructure and licensing expenses.", tags: ["Management", "FinOps"] },
+                                { text: "Optimized relationships with strategic vendors, generating annual savings of €100k.", tags: ["Management"] },
+                            ],
+                            "Project Leadership & Innovation": [
+                                { text: "Led the design and deployment of data-driven solutions for industry giants like Spie Batignolles and Vinci.", tags: ["Data & BI", "Project"] },
+                                { text: "Orchestrated the strategic integration of AI-powered Business Intelligence tools.", tags: ["Data & BI", "AI"] },
+                                { text: "Established rigorous quality assurance standards and oversaw project delivery within budget and timeline constraints.", tags: ["Project", "Agile"] },
+                                { text: "Managed the full lifecycle of multiple SaaS products, from ideation to production.", tags: ["Project"] },
+                            ],
+                            "Architecture & Technical Strategy": [
+                                { text: "Designed and implemented a resilient and scalable platform infrastructure, based on microservices architectures and cloud technologies.", tags: ["Architecture", "Cloud", "DevOps"] },
+                                { text: "Enhanced user engagement by 35% through the integration of AI-driven business intelligence insights.", tags: ["AI", "Data & BI"] },
+                                { text: "Defined and implemented the technology roadmap and target architecture, integrating DevOps, CI/CD principles, and observability.", tags: ["Architecture", "DevOps"] },
+                                { text: "Ensured system and data compliance with relevant regulations (GDPR, data security).", tags: ["Security"] },
+                            ]
+                        }
+                    },
+                    {
+                        role: "Senior System Engineer",
+                        company: "Unigestion UK",
+                        period: "Aug. 2016 – Jul. 2017",
+                        location: "London, UK",
+                        intro: "I played a key role in modernizing the IT infrastructure, focusing on security, performance, and cost optimization.",
+                        details: {
+                            "Projects & Deployment": [
+                                { text: "Deployed a Mobile Device Management (MDM) tool for corporate smartphones.", tags: ["Systems", "Security"] },
+                                { text: "Implemented a Virtual Desktop Infrastructure (VDI) solution for 300+ users.", tags: ["Systems", "Virtualization"] },
+                                { text: "Successfully completed a secure laptop project with double VPN authentication.", tags: ["Security", "Networking"] },
+                                { text: "Implemented and maintained ESXi and Citrix infrastructure.", tags: ["Virtualization", "Systems"] },
+                            ],
+                            "Optimization & Security": [
+                                { text: "Strengthened security protocols, reducing network breaches by 40% in six months.", tags: ["Security"] },
+                                { text: "Reduced initial project costs by 45% through comprehensive RFPs and PoCs.", tags: ["Project"] },
+                                { text: "Optimized system performance and reliability through proactive management of virtualized infrastructures.", tags: ["Virtualization"] },
+                            ]
+                        }
+                    },
+                    {
+                        role: "System Engineer",
+                        company: "Winton Group",
+                        period: "Jan. 2013 – Jan. 2016",
+                        location: "London, UK",
+                        intro: "I significantly contributed to improving operational efficiency and system reliability through automation.",
+                        details: {
+                            "Automation & Efficiency": [
+                                { text: "Streamlined workstation and server upgrade processes, reducing deployment time by 90% with SCCM and PowerShell.", tags: ["Systems", "Automation"] },
+                                { text: "Developed PowerShell scripts to automate VM deployment and updates.", tags: ["Automation", "Virtualization"] },
+                                { text: "Automated employee onboarding and offboarding processes.", tags: ["Automation"] },
+                            ],
+                            "Operations & Support": [
+                                { text: "Coordinated hardware setups for new office openings (APAC, USA).", tags: ["Project"] },
+                                { text: "Implemented a new helpdesk system (JIRA Service Desk) for over 500 users.", tags: ["Systems"] },
+                            ]
+                        }
+                    }
+                ],
+                skills: {
+                    "Cloud Computing": ["Hybrid Cloud", "Cloud-Native Architecture", "Docker", "Kubernetes", "Virtualization"],
+                    "DevOps/CloudOps": ["CI/CD", "GitLab CI", "IaC", "Terraform", "Ansible", "Observability", "FinOps"],
+                    "Systems & Networking": ["Windows Server", "Active Directory", "SCCM", "PowerShell", "VDI", "MDM", "VPN"],
+                    "Data & BI": ["Data-driven Solutions", "AI", "Business Intelligence"],
+                    "Management & Methodologies": ["Management", "Agile", "Scrum", "Project", "Security"]
+                }
+            }
+        };
+
+        let currentLanguage = 'fr';
+        let skillsRadarChartInstance = null; // To store the Chart.js instance
+
+        // Declare global variables for elements
+        let timelineContainer;
+        let skillsTagsContainer;
+        let dynamicSkillsCategories; // New global variable for the dynamic skills container
+        let skillExplanationContainer;
+        let skillExplanationContent;
+        let skillExplanationLoading;
+        let currentSkillName;
+
+        function updateContentLanguage() {
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                const key = element.dataset.langKey;
+                if (translations[currentLanguage][key]) {
+                    element.textContent = translations[currentLanguage][key];
+                }
+            });
+            // Update chart labels
+            if (skillsRadarChartInstance) {
+                skillsRadarChartInstance.data.labels = translations[currentLanguage].radar_labels;
+                skillsRadarChartInstance.update();
+            }
+            // Re-render dynamic content (timeline and skills tags)
+            createTimeline(currentLanguage);
+            createSkillsTags(currentLanguage);
+        }
+
+        function createTimeline(lang) {
+            const data = cvData[lang].experience;
+            let timelineHTML = '';
+            data.forEach((job, index) => {
+                timelineHTML += `
+                    <div class="timeline-item mb-8 flex items-start">
+                        <div class="flex flex-col items-center mr-6">
+                            <button class="timeline-dot bg-white border-2 border-accent-color rounded-full w-6 h-6 flex items-center justify-center focus:outline-none" data-index="${index}">
+                                <span class="dot-inner bg-accent-color rounded-full w-3 h-3 block transition-transform transform scale-0"></span>
+                            </button>
+                            ${index < data.length - 1 ? '<div class="w-px h-full bg-gray-300 mt-2"></div>' : ''}
+                        </div>
+                        <div class="bg-white rounded-lg shadow-md p-6 w-full">
+                            <div class="cursor-pointer timeline-header" data-index="${index}">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="text-xl font-bold">${job.role}</h3>
+                                        <p class="font-semibold accent-color">${job.company}</p>
+                                        <p class="text-sm text-gray-500">${job.period} - ${job.location}</p>
+                                    </div>
+                                    <span class="text-2xl text-gray-400 toggle-icon">+</span>
+                                </div>
+                            </div>
+                            <div class="timeline-item-content">
+                                <p class="italic text-gray-600 my-4">${job.intro}</p>
+                                ${Object.keys(job.details).map(category => `
+                                    <div class="mt-4">
+                                        <h4 class="font-bold text-md mb-2">${category}</h4>
+                                        <ul class="list-disc list-inside space-y-2">
+                                            ${job.details[category].map(detail => `
+                                                <li class="bullet-point pl-2" data-tags="${detail.tags.join(',')}">${detail.text}</li>
+                                            `).join('')}
+                                        </ul>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            timelineContainer.innerHTML = timelineHTML;
+        }
+
+        function createSkillsTags(lang) {
+            const data = cvData[lang].skills;
+            dynamicSkillsCategories.innerHTML = ''; // Clear only the dynamic content
+            Object.keys(data).forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'mb-6';
+                let tagsHTML = `<h4 class="font-bold text-md mb-3">${category}</h4><div class="flex flex-wrap gap-2">`;
+                data[category].forEach(skill => {
+                    tagsHTML += `<span class="skill-tag bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm">${skill}</span>`;
+                });
+                tagsHTML += '</div>';
+                categoryDiv.innerHTML = tagsHTML;
+                dynamicSkillsCategories.appendChild(categoryDiv); // Append to the dynamic container
+            });
+        }
+
+        function createRadarChart() {
+            const ctx = document.getElementById('skillsRadarChart').getContext('2d');
+            if (skillsRadarChartInstance) {
+                skillsRadarChartInstance.destroy(); // Destroy existing chart before creating a new one
+            }
+            skillsRadarChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: translations[currentLanguage].radar_labels,
+                    datasets: [{
+                        label: translations[currentLanguage].skills_expertise_areas,
+                        data: [9, 9, 8, 8, 7],
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(59, 130, 246, 1)'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0, 0, 0, 0.1)' },
+                            grid: { color: 'rgba(0, 0, 0, 0.1)' },
+                            pointLabels: { font: { size: 12 } },
+                            suggestedMin: 0,
+                            suggestedMax: 10,
+                            ticks: {
+                                stepSize: 2,
+                                backdropColor: 'transparent'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        async function getSkillExplanation(skill) {
+            skillExplanationContainer.classList.remove('hidden');
+            skillExplanationContent.textContent = '';
+            skillExplanationLoading.style.display = 'block';
+            currentSkillName.textContent = skill;
+
+            let chatHistory = [];
+            const prompt = translations[currentLanguage].api_prompt_prefix + skill + translations[currentLanguage].api_prompt_suffix;
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            let retries = 0;
+            const maxRetries = 3;
+            let delay = 1000; // 1 second
+
+            while (retries < maxRetries) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 429 && retries < maxRetries - 1) { // Too Many Requests
+                            await new Promise(res => setTimeout(res, delay));
+                            delay *= 2; // Exponential backoff
+                            retries++;
+                            continue;
+                        }
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        skillExplanationContent.textContent = text;
+                    } else {
+                        skillExplanationContent.textContent = "Impossible de générer une explication pour le moment. Veuillez réessayer.";
+                    }
+                    break; // Exit loop on success
+                } catch (error) {
+                    skillExplanationContent.textContent = `Erreur lors de la récupération de l'explication : ${error.message}`;
+                    break; // Exit loop on unrecoverable error
+                } finally {
+                    skillExplanationLoading.style.display = 'none';
+                }
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Assign global variables to elements after DOM is loaded
+            timelineContainer = document.getElementById('timeline-container');
+            skillsTagsContainer = document.getElementById('skills-tags-container');
+            dynamicSkillsCategories = document.getElementById('dynamic-skills-categories'); // Assign the new dynamic container
+            skillExplanationContainer = document.getElementById('skill-explanation-container');
+            skillExplanationContent = document.getElementById('skill-explanation-content');
+            skillExplanationLoading = document.getElementById('skill-explanation-loading');
+            currentSkillName = document.getElementById('current-skill-name');
+
+            // Initialize content with default language (FR)
+            updateContentLanguage();
+            createRadarChart(); // Create chart initially with FR labels
+
+            document.getElementById('lang-fr').addEventListener('click', () => {
+                currentLanguage = 'fr';
+                document.getElementById('lang-fr').classList.add('active');
+                document.getElementById('lang-en').classList.remove('active');
+                updateContentLanguage();
+                skillExplanationContainer.classList.add('hidden'); // Hide explanation on language change
+            });
+
+            document.getElementById('lang-en').addEventListener('click', () => {
+                currentLanguage = 'en';
+                document.getElementById('lang-en').classList.add('active');
+                document.getElementById('lang-fr').classList.remove('active');
+                updateContentLanguage();
+                skillExplanationContainer.classList.add('hidden'); // Hide explanation on language change
+            });
+
+
+            timelineContainer.addEventListener('click', (e) => {
+                const clickedElement = e.target.closest('.timeline-header, .timeline-dot');
+                if (clickedElement) {
+                    const timelineItem = clickedElement.closest('.timeline-item');
+                    if (!timelineItem) return;
+
+                    const content = timelineItem.querySelector('.timeline-item-content');
+                    const toggleIcon = timelineItem.querySelector('.toggle-icon');
+                    const dotInner = timelineItem.querySelector('.dot-inner');
+
+                    if (!content || !toggleIcon || !dotInner) {
+                        console.error("Could not find content, toggleIcon or dotInner within the timeline item.");
+                        return;
+                    }
+
+                    const isOpen = content.classList.contains('open');
+
+                    document.querySelectorAll('.timeline-item-content.open').forEach(c => c.classList.remove('open'));
+                    document.querySelectorAll('.dot-inner').forEach(d => d.classList.add('scale-0'));
+                    document.querySelectorAll('.toggle-icon').forEach(i => i.textContent = '+');
+
+                    if (!isOpen) {
+                        content.classList.add('open');
+                        dotInner.classList.remove('scale-0');
+                        toggleIcon.textContent = '-';
+                    }
+                }
+            });
+
+            let activeSkill = null;
+            skillsTagsContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('skill-tag')) {
+                    const skill = e.target.textContent;
+                    const allTags = document.querySelectorAll('.skill-tag');
+                    const allBullets = document.querySelectorAll('.bullet-point');
+
+                    if (activeSkill === skill) {
+                        e.target.classList.remove('active');
+                        allBullets.forEach(b => b.classList.remove('highlight'));
+                        skillExplanationContainer.classList.add('hidden');
+                        activeSkill = null;
+                    } else {
+                        allTags.forEach(t => t.classList.remove('active'));
+                        e.target.classList.add('active');
+                        activeSkill = skill;
+                        
+                        allBullets.forEach(bullet => {
+                            const tags = bullet.dataset.tags.split(',');
+                            if (tags.map(t => t.trim()).includes(skill)) {
+                                bullet.classList.add('highlight');
+                            } else {
+                                bullet.classList.remove('highlight');
+                            }
+                        });
+                        getSkillExplanation(skill);
+                    }
+                }
+            });
+            
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            document.querySelectorAll('.nav-link-mobile').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main > section');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+
+            sections.forEach(section => observer.observe(section));
+        });
+
+    </script>
+</body>
+</html>
