@@ -9,6 +9,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Google tag (gtag.js) - REPLACE G-XXXXXXXXXX WITH YOUR ACTUAL GA4 MEASUREMENT ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TSQ3NH218G"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-TSQ3NH218G'); // IMPORTANT: Replace with your GA4 Measurement ID
+    </script>
     <!-- Chosen Palette: Calm Professional (Warm neutrals: off-white/beige, dark gray text, with a muted blue accent) -->
     <!-- Application Structure Plan: A non-linear, single-page dashboard with top navigation (Overview, Career Path, Skills, Contact). This structure transforms the static CV into an interactive portfolio, allowing users to explore content based on their interests (e.g., diving into specific skills or career stages) rather than just scrolling. It prioritizes user-driven exploration over a linear presentation. -->
     <!-- Visualization & Content Choices: Career Path -> Interactive Timeline (HTML/JS) to show progression, with clickable nodes to reveal details and filters to highlight specific expertise areas. Skills -> Radar Chart (Chart.js) for a high-level view of skill balance and interactive skill tags (HTML/JS) to cross-filter experiences, demonstrating the practical application of skills. Key Metrics -> KPI Cards (HTML/CSS) for immediate impact. This approach uses interaction to connect different parts of the CV, creating a cohesive narrative. -->
@@ -18,6 +27,8 @@
             font-family: 'Lato', sans-serif;
             background-color: #F8F7F4; /* Light mode default */
             color: #333; /* Light mode default */
+            margin: 0; /* Remove default body margin */
+            scroll-behavior: smooth; /* Smooth scrolling for navigation */
         }
         /* Dark mode styles */
         html.dark body {
@@ -67,7 +78,7 @@
             padding-bottom: 0;
         }
         .timeline-item-content.open {
-            max-height: 1000px;
+            max-height: 1000px; /* Sufficiently large to accommodate content */
             padding-top: 1rem;
             padding-bottom: 1rem;
         }
@@ -101,6 +112,8 @@
         }
         .bullet-point {
             transition: background-color 0.3s, border-left-color 0.3s;
+            word-wrap: break-word; /* Ensure text wraps on small screens */
+            overflow-wrap: break-word; /* Modern equivalent */
         }
         .chart-container {
             position: relative;
@@ -219,6 +232,32 @@
         html.dark .text-gray-400 {
             color: #718096; /* Lighter toggle icon */
         }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            .nav-list {
+                flex-wrap: wrap; /* Allow nav items to wrap */
+                gap: 0.5rem; /* Smaller gap on mobile */
+                padding: 0 1rem;
+            }
+            .nav-item a {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            .kpi-card {
+                padding: 1.5rem; /* Slightly less padding on mobile */
+            }
+            h1 { font-size: 1.75rem; }
+            h2 { font-size: 1.5rem; }
+            h3 { font-size: 1.1rem; }
+            p, ul, li {
+                font-size: 0.95rem; /* Slightly smaller text for readability */
+            }
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -334,7 +373,7 @@
                     <h3 class="text-2xl font-bold mb-4" data-lang-key="contact_title">Contact</h3>
                     <p class="mb-2"><strong>Email:</strong> <a href="mailto:charles.depirey@gmail.com" class="accent-color hover:underline">charles.depirey@gmail.com</a></p>
                     <p class="mb-2"><strong>Téléphone:</strong> +33 (0) 6 51 74 74 88</p>
-                    <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/charlesdepirey/" target="_blank" class="accent-color hover:underline">linkedin.com/in/charlesdepirey</a></p>
+                    <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/charlesdepirey/" target="_blank" class="accent-color hover:underline" id="linkedin-link">linkedin.com/in/charlesdepirey</a></p>
                 </div>
             </div>
         </section>
@@ -554,8 +593,148 @@
                         intro: "Mon stage chez Microsoft m'a permis de travailler sur le test d'applications et le support aux partenaires avant le lancement de Windows 7.",
                         details: {
                             "Contribution au Développement & Support": [
-                                { text: "Test d'applications avant le lancement de Windows 7.", tags: ["Test", "Windows"] },
+                                { text: "Test d'applications avant le lancement de Windows 7.", tags: ["Testing", "Windows"] },
                                 { text: "Assistance à l'équipe ISV dans la gestion de leurs partenaires.", tags: ["Support"] },
+                            ]
+                        }
+                    }
+                ],
+                skills: {
+                    "Cloud Computing": ["Cloud Hybride", "Architecture Cloud-Native", "Docker", "Kubernetes", "Virtualisation", "ESXi", "VSphere"],
+                    "DevOps/CloudOps": ["CI/CD", "GitLab CI", "IaC", "Terraform", "Ansible", "Observabilité", "FinOps", "GitHub"],
+                    "Systèmes & Réseaux": ["Windows Server", "Active Directory", "SCCM", "PowerShell", "VDI", "MDM", "VPN", "Cisco ASA", "Réseaux"],
+                    "Data & BI": ["Data-driven Solutions", "IA", "Business Intelligence"],
+                    "Gestion & Méthodologies": ["Management", "Agile", "Scrum", "Projet", "Sécurité", "IT Project Management"],
+                    "Scripting & Automatisation": ["PowerShell", "Python"],
+                    "Support IT": ["Support", "Test", "Windows", "Office 365 Administration"]
+                }
+            },
+            en: {
+                experience: [
+                    {
+                        role: "Co-Founder/CTO",
+                        company: "CAD.42 Services",
+                        period: "Oct. 2016 – Aug. 2025",
+                        location: "Paris, France",
+                        intro: "As Co-Founder and CTO, I spearheaded the entire technology strategy and product development, building an agile and high-performing engineering organization.",
+                        details: {
+                            "Management & Leadership": [
+                                { text: "Built and led a high-performing engineering team (up to 15 individuals), including full-stack developers, data scientists, and architects.", tags: ["Management"] },
+                                { text: "Doubled the productivity and operational efficiency of the team by implementing Agile methodologies (Scrum).", tags: ["Management", "Agile"] },
+                                { text: "Defined and executed the talent acquisition and retention strategy for technical roles, reducing hiring time by 30%.", tags: ["Management"] },
+                                { text: "Managed technology budgets (several hundred thousand euros), optimizing infrastructure and licensing expenses.", tags: ["Management", "FinOps"] },
+                                { text: "Optimized relationships with strategic vendors, generating annual savings of €100k.", tags: ["Management"] },
+                            ],
+                            "Project Leadership & Innovation": [
+                                { text: "Led the design and deployment of data-driven solutions for industry giants like Spie Batignolles and Vinci.", tags: ["Data & BI", "Project"] },
+                                { text: "Orchestrated the strategic integration of AI-powered Business Intelligence tools.", tags: ["Data & BI", "AI"] },
+                                { text: "Established rigorous quality assurance standards and oversaw project delivery within budget and timeline constraints.", tags: ["Project", "Agile"] },
+                                { text: "Managed the full lifecycle of multiple SaaS products, from ideation to production.", tags: ["Project"] },
+                            ],
+                            "Architecture & Technical Strategy": [
+                                { text: "Designed and implemented a resilient and scalable platform infrastructure, based on microservices architectures and cloud technologies.", tags: ["Architecture", "Cloud", "DevOps"] },
+                                { text: "Enhanced user engagement by 35% through the integration of AI-driven business intelligence insights.", tags: ["AI", "Data & BI"] },
+                                { text: "Defined and implemented the technology roadmap and target architecture, integrating DevOps, CI/CD principles, and observability.", tags: ["Architecture", "DevOps"] },
+                                { text: "Assured system and data compliance with relevant regulations (GDPR, data security).", tags: ["Security"] },
+                            ]
+                        }
+                    },
+                    {
+                        role: "Senior System Engineer",
+                        company: "Unigestion UK",
+                        period: "Aug. 2016 – Jul. 2017",
+                        location: "London, UK",
+                        intro: "I played a key role in modernizing the IT infrastructure, focusing on security, performance, and cost optimization.",
+                        details: {
+                            "Projects & Deployment": [
+                                { text: "Deployed a Mobile Device Management (MDM) tool for corporate smartphones.", tags: ["Systems", "Security"] },
+                                { text: "Implemented a Virtual Desktop Infrastructure (VDI) solution for 300+ users.", tags: ["Systems", "Virtualization"] },
+                                { text: "Successfully completed a secure laptop project with double VPN authentication.", tags: ["Security", "Networking"] },
+                                { text: "Implemented and maintained ESXi and Citrix.", tags: ["Virtualization", "Systems"] },
+                            ],
+                            "Optimization & Security": [
+                                { text: "Strengthened security protocols, reducing network breaches by 40% in six months.", tags: ["Security"] },
+                                { text: "Reduced initial project costs by 45% through comprehensive RFPs and PoCs.", tags: ["Project"] },
+                                { text: "Optimized system performance and reliability through proactive management of virtualized infrastructures.", tags: ["Virtualization"] },
+                            ]
+                        }
+                    },
+                    {
+                        role: "System Engineer", // Combined role for display
+                        company: "Winton Group",
+                        period: "Apr. 2013 – Jul. 2016", // Combined period
+                        location: "London, UK",
+                        intro: "I began my career at Winton Group as a Windows IT Administrator, evolving into a System Engineer role to drive automation and advanced support.",
+                        details: {
+                            "System Engineer (Jan. 2015 – Jul. 2016)": [ // Moved to top
+                                { text: "Provided L2 and L3 support, resolving complex incidents and ensuring business continuity.", tags: ["Support", "Systems"] },
+                                { text: "Streamlined workstation and server upgrade processes, reducing deployment time by 90% with SCCM and PowerShell.", tags: ["Systems", "Automation"] },
+                                { text: "Developed PowerShell scripts to automate VM deployment and updates.", tags: ["Automation", "Virtualization"] },
+                                { text: "Automated employee onboarding and offboarding processes.", tags: ["Automation"] },
+                                { text: "Coordinated hardware setups for new office openings (APAC, USA).", tags: ["Project"] },
+                                { text: "Implemented a new helpdesk system (JIRA Service Desk) for over 500 users.", tags: ["Systems", "Project"] },
+                            ],
+                            "Windows IT Administrator (Apr. 2013 – Dec. 2014)": [ // Moved to bottom
+                                { text: "Handled all L1 tickets for 500+ users.", tags: ["Systems", "Support"] },
+                                { text: "Provided support for AV systems and VIP users.", tags: ["Support"] },
+                                { text: "Managed trading desk support and resolved Bloomberg keyboard issues.", tags: ["Support"] },
+                                { text: "Operated within a VMWare VDI environment for all these tasks.", tags: ["Virtualization", "Support"] },
+                            ]
+                        }
+                    },
+                    {
+                        role: "Network Engineer",
+                        company: "SUPINFO",
+                        period: "2011 – Apr. 2013",
+                        location: "London, United Kingdom",
+                        intro: "As a Network Engineer, I administered and optimized the internal network infrastructure, while ensuring security.",
+                        details: {
+                            "Network Administration & Security": [
+                                { text: "Administration, optimization, and support of an internal LAN/WLAN/WAN infrastructure.", tags: ["Networking", "Support"] },
+                                { text: "Monitoring and support of internal network security with Cisco ASA technology.", tags: ["Networking", "Security", "Cisco ASA"] },
+                            ]
+                        }
+                    },
+                    {
+                        role: "System Administrator",
+                        company: "MO-SYS",
+                        period: "Jul. 2011 – Nov. 2011",
+                        location: "London, United Kingdom",
+                        intro: "At MO-SYS, I provided user support and system maintenance, with a focus on stability and virtualization.",
+                        details: {
+                            "System Support & Maintenance": [
+                                { text: "Supported an office of 25+ users.", tags: ["Support"] },
+                                { text: "Managed and maintained a Windows network, ensuring its stability and evolution.", tags: ["Systems", "Networking"] },
+                                { text: "Tested, monitored, and maintained the backup system.", tags: ["Systems", "Security"] },
+                                { text: "Built and deployed PCs and servers.", tags: ["Systems"] },
+                                { text: "Virtualization using ESXi, VSphere.", tags: ["Virtualization"] },
+                                { text: "Conducted internal audits.", tags: ["Security"] },
+                            ]
+                        }
+                    },
+                    {
+                        role: "Webmaster",
+                        company: "TurfEditions",
+                        period: "Jul. 2010 – Oct. 2010",
+                        location: "Paris Area, France",
+                        intro: "As a Webmaster, I was responsible for the creation and updates of an online betting website.",
+                        details: {
+                            "Web Development": [
+                                { text: "Created the website: www.leturf.fr, designed for online betting, primarily using PHP and Java.", tags: ["Web Development", "PHP", "Java"] },
+                                { text: "Created a PHP interface to publish real-time options related to online betting.", tags: ["Web Development", "PHP"] },
+                            ]
+                        }
+                    },
+                    {
+                        role: "Intern",
+                        company: "Microsoft",
+                        period: "Jul. 2009 – Oct. 2009",
+                        location: "France",
+                        intro: "My internship at Microsoft involved testing applications and supporting partners before the launch of Windows 7.",
+                        details: {
+                            "Development Contribution & Support": [
+                                { text: "Tested applications before the launch of Windows 7.", tags: ["Testing", "Windows"] },
+                                { text: "Assisted the ISV team in managing their partners.", tags: ["Support"] },
                             ]
                         }
                     }
@@ -995,17 +1174,64 @@
             const navLinks = document.querySelectorAll('.nav-link');
             const sections = document.querySelectorAll('main > section');
 
+            // Intersection Observer for navigation highlighting
+            const observerOptions = {
+                root: null, // viewport as the root
+                // Adjust rootMargin: This defines the area where intersection is detected.
+                // '-10% 0px -80% 0px' means:
+                // - Top 10% of the viewport is ignored.
+                // - Bottom 80% of the viewport is ignored.
+                // This makes the active section the one whose top is visible in the remaining 70% of the viewport,
+                // effectively highlighting the section that is currently "at the top" of the screen.
+                rootMargin: '-10% 0px -80% 0px',
+                threshold: 0 // As soon as any part of the section is visible
+            };
+
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        navLinks.forEach(link => {
-                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                    const id = entry.target.id;
+                    const navLink = document.querySelector(`.nav-list a[href="#${id}"]`);
+
+                    if (navLink) {
+                        if (entry.isIntersecting) {
+                            // Remove active class from all links first
+                            navLinks.forEach(link => link.classList.remove('active'));
+                            // Then add active class to the current section's link
+                            navLink.classList.add('active');
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            // Observe each section
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // Set initial active state on page load (defaults to 'Overview' if at the top)
+            // This handles cases where the page loads and no section is yet intersecting based on rootMargin.
+            const firstSectionLink = document.querySelector('.nav-list a[href="#overview"]');
+            if (firstSectionLink) {
+                firstSectionLink.classList.add('active');
+            }
+
+            // --- Smooth scrolling for nav links (desktop and mobile) ---
+            document.querySelectorAll('.nav-link, .nav-link-mobile').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault(); // Prevent default jump
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        // Scroll to the target section, offset by the nav bar height
+                        const navHeight = document.querySelector('header').offsetHeight; // Get header height
+                        const targetPosition = targetSection.getBoundingClientRect().top + window.scrollY - navHeight;
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
                         });
                     }
                 });
-            }, { rootMargin: "-50% 0px -50% 0px" });
-
-            sections.forEach(section => observer.observe(section));
+            });
         });
 
     </script>
